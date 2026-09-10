@@ -1,0 +1,36 @@
+{
+  "schema": "wechat-search-assets/v2",
+  "guide_version": "2021-11-25",
+  "distribution": "public_code_and_original_components",
+  "third_party_originals_included": false,
+  "files": [
+    {
+      "id": "end-card",
+      "path": "assets/components/end-card.svg",
+      "bytes": 372,
+      "sha256": "e684c5b2a22dd06d0586245b5252b5bca622ceb8edf245c719d530a6c9f38cbf",
+      "role": "original_runtime_component"
+    },
+    {
+      "id": "scene-card",
+      "path": "assets/components/scene-card.svg",
+      "bytes": 301,
+      "sha256": "ff2c0697dbc40bee5e1f77a53509639dc9915d20c2033c06d6a336098dc023c2",
+      "role": "original_runtime_component"
+    },
+    {
+      "id": "search-band",
+      "path": "assets/components/search-band.svg",
+      "bytes": 625,
+      "sha256": "f8d95de9cc8487475bdcbe65bff373de3985a9b78b65a2362da437bc18c611e2",
+      "role": "original_runtime_component"
+    },
+    {
+      "id": "search-strip",
+      "path": "assets/components/search-strip.svg",
+      "bytes": 301,
+      "sha256": "ff2c0697dbc40bee5e1f77a53509639dc9915d20c2033c06d6a336098dc023c2",
+      "role": "original_runtime_component"
+    }
+  ]
+}
