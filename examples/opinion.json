@@ -1,0 +1,17 @@
+{
+  "article_path": "opinion.md",
+  "account_name": "示例判断笔记 AI Notes",
+  "form": "end-card",
+  "copy": { "headline": "让判断有依据，让讨论有起点", "benefit": "从对象、问题和理由，写下你的下一次判断。" },
+  "analysis": {
+    "topic": "把隐含的产品判断写成可讨论的内容",
+    "audience": "需要参与方案讨论的创作者与协作者",
+    "takeaway": "说明对象、问题和理由，帮助讨论从具体分歧开始",
+    "tone": "克制、思考型",
+    "visual_style": "深绿色底、清晰文字层次和留白",
+    "reason": "文章以观点推演为主，结尾没有场景图片，采用文末卡承接行动建议。",
+    "evidence": [{ "quote": "一次可讨论的判断，包含对象、问题和理由。", "supports": "价值文案保留这三个具体要素。" }]
+  },
+  "placement": "正文最后一段之后",
+  "style": { "mode": "dark", "background": "#192C28", "ink": "#F7F5E9", "muted": "#CDD8CD", "accent": "#9CCAA5" }
+}

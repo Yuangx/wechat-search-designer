@@ -1,0 +1,18 @@
+{
+  "article_path": "life.md",
+  "account_name": "示例慢慢记录",
+  "form": "scene-card",
+  "copy": { "headline": "散步回来，\n留住一件小事", "benefit": "从一片叶子、一句话，记下今天看见的生活。" },
+  "analysis": {
+    "topic": "通过散步记录日常小事",
+    "audience": "喜欢散步和生活记录的读者",
+    "takeaway": "从一件实际看见的小事开始记录",
+    "tone": "缓慢、温和",
+    "visual_style": "暖白纸张色、浅褐线条和公园场景插画",
+    "reason": "原文有长椅、书与树叶的具体场景，使用相同主题的示例插画，衔接随笔气氛。",
+    "evidence": [{ "quote": "散步后的记录，可以从一件看见的小事开始。", "supports": "标题与价值文案引导记录具体小事，没有添加额外福利承诺。" }]
+  },
+  "placement": "结尾段落之后",
+  "style": { "mode": "light", "background": "#FFF8ED", "ink": "#493A2D", "muted": "#756049", "accent": "#8C6944" },
+  "image": { "path": "walk-scene.png", "alt": "示例插画：公园长椅、书页和一片叶子", "basis": "本包原创几何线条示例；虚构场景，无真人或客户素材", "fit": "contain" }
+}

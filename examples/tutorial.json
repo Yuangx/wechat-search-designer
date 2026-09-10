@@ -1,0 +1,17 @@
+{
+  "article_path": "tutorial.md",
+  "account_name": "示例创作室",
+  "form": "search-strip",
+  "copy": { "headline": "从一份清单开始，整理手边文件" },
+  "analysis": {
+    "topic": "小批量整理下载文件夹",
+    "audience": "希望降低文件整理负担的普通电脑使用者",
+    "takeaway": "先检查再移动，降低整理时的犹豫",
+    "tone": "轻松、具体",
+    "visual_style": "浅底绿色；用文字衔接已有操作截图",
+    "reason": "正文已有操作截图与作者介绍，使用单行主题引导和简洁搜索条，避免重复占据篇幅。",
+    "evidence": [{ "quote": "先列清单，再检查重名，确认后再移动。", "supports": "标题从清单出发，与本文的整理步骤一致。" }]
+  },
+  "placement": "结语之后、作者介绍之前",
+  "style": { "mode": "light" }
+}
