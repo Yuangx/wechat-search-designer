@@ -1,0 +1,6 @@
+interface:
+  display_name: "微信搜一搜物料设计"
+  short_description: "根据文章内容选择和改造搜一搜素材，生成配套引导图与可编辑文件"
+  default_prompt: "使用 $wechat-search-designer，根据这篇文章和我提供的公众号名称，设计一款适合插入文中的搜一搜物料。"
+policy:
+  allow_implicit_invocation: true
