@@ -1,0 +1,18 @@
+name: 功能建议
+description: 描述一种尚未被满足的文章创作场景
+title: "[Feature] "
+body:
+  - type: textarea
+    id: scenario
+    attributes:
+      label: 创作场景
+      description: 文章类型、读者和希望完成的设计，不附真实私人材料
+    validations:
+      required: true
+  - type: textarea
+    id: change
+    attributes:
+      label: 建议的能力与完成标准
+      description: 说明如何判断它解决了问题
+    validations:
+      required: true
