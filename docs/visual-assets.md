@@ -10,6 +10,11 @@
 
 以上素材的许可状态遵循项目 [NOTICE](../NOTICE.md)；AI 生成来源说明不代表微信品牌授权。输入的真实素材及第三方标识不在此目录内。
 
+## 组合图素材
+
+- `images/composite-wide.png`、`composite-square.png`、`composite-reuse.png`：`0.3.0` 本地工具运行 `npm run demo:composite` 后导出的实际图片，分别展示横图、方图和复用作者卡。均使用虚构作者资料；搜索区仍使用原创演示标识。
+- `../examples/author-avatar.svg/png` 与 `author-card.svg/png`：本项目绘制的原创几何头像和虚构作者卡，通过 `scripts/make-author-example.mjs` 生成，无真人素材或个人账号数据，适用项目 MIT 许可证。
+
 ## 布局参考
 
 参考 [Supabase README](https://github.com/supabase/supabase/blob/master/README.md) 的项目介绍、实际界面和说明图分层，以及 [Excalidraw README](https://github.com/excalidraw/excalidraw/blob/master/README.md) 的效果展示与简短入口组织。仅借鉴信息顺序，没有复制这些项目的图片、品牌或文案。核对日期：2026-09-10。
