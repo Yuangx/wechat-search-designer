@@ -5,18 +5,18 @@ import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const VERSION = '0.2.0';
+export const VERSION = '0.3.0';
 export const FONT = '"PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif';
 export const hash = value => createHash('sha256').update(value).digest('hex');
 export const xml = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));
-const fail = (code, message) => { const error = new Error(message); error.code = code; throw error; };
+export const fail = (code, message) => { const error = new Error(message); error.code = code; throw error; };
 const required = (value, label) => {
   if (typeof value !== 'string' || !value.trim()) fail('INVALID_INPUT', `${label} 必须填写。`);
   if (/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/u.test(value)) fail('INVALID_INPUT', `${label} 含无效控制字符。`);
   return value;
 };
 export const graphemes = text => Array.from(new Intl.Segmenter('zh', {granularity:'grapheme'}).segment(text), x => x.segment);
-const advance = (c, size) => size * (/^[\u0000-\u007f]+$/u.test(c) ? (/^[ilI.,' ]$/u.test(c) ? .36 : .69) : 1.04);
+const advance = (c, size) => size * (/^[\u0000-\u007f]+$/u.test(c) ? (/^[ilI.,' ]$/u.test(c) ? .36 : /^[WMwm@%]$/u.test(c) ? 1.04 : .69) : 1.04);
 export function wrap(text, width, size) {
   const lines = []; let line = ''; let used = 0;
   for (const c of graphemes(text)) {
@@ -36,7 +36,7 @@ const template = (source, values) => source.replace(/\{\{(\w+)\}\}/g, (_, key) =
   if (!(key in values)) fail('TEMPLATE_ERROR', `模板参数缺失：${key}`);
   return String(values[key]);
 });
-const textBlock = ({id, text, x, y, width, size, color, weight=400, lineHeight=size*1.36}) => {
+export const textBlock = ({id, text, x, y, width, size, color, weight=400, lineHeight=size*1.36}) => {
   const lines = wrap(text, width, size);
   const svg = `<text id="${id}" data-copy="${xml(text)}" data-max-width="${width}" data-role="copy" x="${x}" y="${y}" fill="${color}" font-family="${xml(FONT)}" font-size="${size}" font-weight="${weight}" xml:space="preserve">${lines.map((line,i)=>`<tspan x="${x}" dy="${i ? lineHeight : 0}">${xml(line)}</tspan>`).join('')}</text>`;
   return {svg, bottom:y+(lines.length-1)*lineHeight+size*.28, lines};
@@ -61,11 +61,15 @@ export async function readSpec(specPath) {
   if (spec.article_path) spec.article = await fs.readFile(path.resolve(base,spec.article_path),'utf8');
   if (spec.image?.path) spec.image = {...spec.image, path:path.resolve(base,spec.image.path)};
   if (spec.brand?.path) spec.brand = {...spec.brand, path:path.resolve(base,spec.brand.path)};
+  if (spec.author) {
+    spec.author = {...spec.author};
+    for (const key of ['avatar','image']) if (spec.author[key]?.path) spec.author[key] = {...spec.author[key],path:path.resolve(base,spec.author[key].path)};
+  }
   validateSpec(spec);
   return spec;
 }
 
-async function readBrand(spec, mode) {
+export async function readBrand(spec, mode) {
   const brand=spec.brand;
   if(!brand)fail('BRAND_REQUIRED','请提供可用于本次设计的搜一搜标识，并填写 brand.path、variant、source 和 rights_basis；公开包不附带第三方标识。');
   for(const key of ['path','variant','source','rights_basis'])required(brand[key],`brand.${key}`);
@@ -82,14 +86,43 @@ async function readBrand(spec, mode) {
 
 export function validateSpec(spec) {
   if (!spec || typeof spec !== 'object') fail('INVALID_INPUT','设计输入必须是 JSON 对象。');
-  required(spec.article,'文章'); required(spec.account_name,'准确公众号名称');
-  if (/[\r\n\t]/u.test(spec.account_name) || spec.account_name !== spec.account_name.trim()) fail('INVALID_INPUT','公众号名称需保持准确，不能含首尾空格或换行。');
-  if (graphemes(spec.account_name).length > 120) fail('INVALID_INPUT','公众号名称超过 120 个字符，请核对准确名称。');
-  if (!['search-strip','end-card','scene-card'].includes(spec.form)) fail('INVALID_INPUT','form 只能是 search-strip、end-card 或 scene-card。');
-  required(spec.copy?.headline,'引导标题');
-  if (graphemes(spec.copy.headline).length > 70) fail('INVALID_INPUT','请将引导标题整理为 70 字以内；公众号名称保持完整。');
-  if (spec.copy.benefit !== undefined && typeof spec.copy.benefit !== 'string') fail('INVALID_INPUT','benefit 必须是文本。');
-  if (spec.form !== 'search-strip') required(spec.copy.benefit,'文章价值文案');
+  required(spec.article,'文章');
+  const composite=spec.form==='composite-card';
+  if (!['search-strip','end-card','scene-card','composite-card'].includes(spec.form)) fail('INVALID_INPUT','form 只能是 search-strip、end-card、scene-card 或 composite-card。');
+  if (composite) {
+    if (!Array.isArray(spec.modules)||!spec.modules.length||new Set(spec.modules).size!==spec.modules.length||spec.modules.some(m=>!['author','search','engagement'].includes(m))) fail('INVALID_INPUT','modules 需包含不重复的 author、search 或 engagement。');
+    if (!spec.size) fail('SIZE_REQUIRED','请先让用户选择图片比例与像素尺寸，再填写 size.width 和 size.height。');
+    if (spec.layout&&!['auto','stacked','split'].includes(spec.layout)) fail('INVALID_INPUT','layout 只能是 auto、stacked 或 split。');
+    if (spec.layout==='split'&&!(spec.modules.includes('author')&&spec.modules.includes('search'))) fail('INVALID_INPUT','split 需要同时选择 author 和 search。');
+    if (spec.modules.includes('author')) {
+      const a=spec.author;
+      required(a?.name,'准确作者名');
+      if (a.name!==a.name.trim()||/[\r\n\t]/u.test(a.name)||graphemes(a.name).length>120) fail('INVALID_INPUT','作者名需保持准确，不能含首尾空格、换行或超过 120 字。');
+      if (!['profile','image'].includes(a.mode)) fail('INVALID_INPUT','author.mode 只能是 profile 或 image。');
+      if (a.description!==undefined&&typeof a.description!=='string') fail('INVALID_INPUT','作者简介必须是文本。');
+      if (a.mode==='image'&&!a.image?.path) fail('INVALID_INPUT','复用作者卡需要 author.image.path。');
+      if (a.mode==='profile'&&a.image||a.mode==='image'&&(a.avatar||a.description)) fail('INVALID_INPUT','作者卡图片复用与资料生成字段不能混用。');
+      for (const asset of [a.avatar,a.image].filter(Boolean)) {
+        required(asset.path,'作者素材路径');required(asset.alt,'作者素材说明');required(asset.basis,'作者素材来源与使用依据');
+      }
+    } else if (spec.author) fail('INVALID_INPUT','未选择 author 模块，不应传入作者资料。');
+    if (spec.modules.includes('engagement')) {
+      const actions=spec.engagement?.actions;
+      if (actions!==undefined&&(!Array.isArray(actions)||actions.length<1||actions.length>12)) fail('INVALID_INPUT','互动动作需为 1–12 项；未填写时采用点赞、在看、转发。');
+      for (const label of actions||[]) {required(label,'互动动作');if(graphemes(label).length>24)fail('INVALID_INPUT','单个互动动作请精简至 24 字以内。');}
+      if(spec.engagement?.caption!==undefined&&typeof spec.engagement.caption!=='string')fail('INVALID_INPUT','互动辅助文案必须是文本。');
+    } else if (spec.engagement) fail('INVALID_INPUT','未选择 engagement 模块，不应传入互动内容。');
+    if (!spec.modules.includes('search')&&(spec.brand||spec.account_name)) fail('INVALID_INPUT','未选择 search 模块，不应传入搜一搜标识或公众号搜索名称。');
+  }
+  if (!composite||spec.modules.includes('search')) {
+    required(spec.account_name,'准确公众号名称');
+    if (/[\r\n\t]/u.test(spec.account_name) || spec.account_name !== spec.account_name.trim()) fail('INVALID_INPUT','公众号名称需保持准确，不能含首尾空格或换行。');
+    if (graphemes(spec.account_name).length > 120) fail('INVALID_INPUT','公众号名称超过 120 个字符，请核对准确名称。');
+  }
+  if (!composite) required(spec.copy?.headline,'引导标题');
+  for (const key of ['headline','benefit']) if(spec.copy?.[key]!==undefined&&typeof spec.copy[key]!=='string')fail('INVALID_INPUT',`${key} 必须是文本。`);
+  if (spec.copy?.headline&&graphemes(spec.copy.headline).length > 70) fail('INVALID_INPUT','请将引导标题整理为 70 字以内；公众号名称保持完整。');
+  if (!composite&&spec.form !== 'search-strip') required(spec.copy?.benefit,'文章价值文案');
   if (spec.form === 'search-strip' && spec.copy.benefit) fail('INVALID_INPUT','简洁搜索条只放 headline；需要补充价值文案时使用 end-card。');
   required(spec.placement,'建议插入位置');
   for (const k of ['topic','audience','takeaway','tone','visual_style','reason']) required(spec.analysis?.[k],`analysis.${k}`);
@@ -105,6 +138,10 @@ export function validateSpec(spec) {
     if (spec.image.fit && !['contain','cover'].includes(spec.image.fit)) fail('INVALID_INPUT','image.fit 只能是 contain 或 cover。');
   }
   if (spec.size && (!Number.isInteger(spec.size.width) || spec.size.width < 720 || spec.size.width > 2160 || !Number.isInteger(spec.size.height) || spec.size.height < 120 || spec.size.height > 2400)) fail('INVALID_INPUT','自定义尺寸范围：宽 720–2160，高 120–2400，单位 px。');
+  if (spec.size?.aspect_ratio!==undefined) {
+    const m=String(spec.size.aspect_ratio).match(/^(\d+(?:\.\d+)?):(\d+(?:\.\d+)?)$/);
+    if (!m||!Number(m[1])||!Number(m[2])||Math.abs(spec.size.width*Number(m[2])/Number(m[1])-spec.size.height)>1) fail('SIZE_RATIO_MISMATCH','比例与像素尺寸不一致；请按用户的选择核对，不能自行更改。');
+  }
   return spec;
 }
 
@@ -119,6 +156,7 @@ export async function buildDesign(spec) {
     if (!/^#[0-9a-f]{6}$/iu.test(style[key])) fail('INVALID_INPUT', `${key} 必须是六位十六进制颜色。`);
   }
   if (contrast(style.ink,style.background)<4.5 || contrast(style.muted,style.background)<4.5) fail('LOW_CONTRAST','文字与背景对比度不足，请调整内容区颜色。');
+  if (spec.form==='composite-card') return (await import('./composite.mjs')).buildComposite(spec,style);
   const {data:logoData,item:logoItem}=await readBrand(spec,mode);
   const logo = `data:image/png;base64,${logoData.toString('base64')}`;
   const size = 44;
@@ -209,16 +247,23 @@ export async function exportPng(design) {
         const a=blocks[i],b=blocks[j];if(a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y) issues.push(`${a.id}/${b.id}:overlap`);
       }
       const brand=document.querySelector('#brand-mark');
-      if(Math.abs(Number(brand.getAttribute('width'))/Number(brand.getAttribute('height'))-592/105)>.001) issues.push('brand:aspect_ratio');
-      return {issues,blocks,account_text:document.querySelector('#account-name').textContent};
+      if(brand&&Math.abs(Number(brand.getAttribute('width'))/Number(brand.getAttribute('height'))-592/105)>.001) issues.push('brand:aspect_ratio');
+      const images=Array.from(document.querySelectorAll('svg image')).map(el=>({id:el.id,x:Number(el.getAttribute('x')),y:Number(el.getAttribute('y')),width:Number(el.getAttribute('width')),height:Number(el.getAttribute('height'))}));
+      for(const a of images) {
+        if(a.x<0||a.y<0||a.x+a.width>box.width+1||a.y+a.height>box.height+1)issues.push(`${a.id}:canvas_overflow`);
+        for(const b of blocks)if(a.x<b.x+b.width&&a.x+a.width>b.x&&a.y<b.y+b.height&&a.y+a.height>b.y)issues.push(`${a.id}/${b.id}:overlap`);
+      }
+      for(const block of blocks)if(block.phone_font_px<12)issues.push(`${block.id}:phone_font_too_small`);
+      return {issues,blocks,images,account_text:document.querySelector('#account-name')?.textContent||null,author_text:document.querySelector('#author-name')?.textContent||null};
     });
     if (geometry.issues.length) { const e=new Error(`排版检查未通过：${geometry.issues.join(', ')}`);e.code='LAYOUT_QC';e.geometry=geometry;throw e; }
     const fonts=[];
     try {
       const session=await page.context().newCDPSession(page);await session.send('DOM.enable');await session.send('CSS.enable');
       const {root}=await session.send('DOM.getDocument');
-      for(const selector of ['#headline','#account-name']) {
+      for(const selector of ['#headline','#account-name','#author-name','#action-0']) {
         const {nodeId}=await session.send('DOM.querySelector',{nodeId:root.nodeId,selector});
+        if(!nodeId)continue;
         const result=await session.send('CSS.getPlatformFontsForNode',{nodeId});
         for(const f of result.fonts) if(!fonts.includes(f.familyName)) fonts.push(f.familyName);
       }
@@ -232,7 +277,7 @@ export async function exportPng(design) {
 }
 
 function preview(design,hasPng) {
-  return `<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'"><title>搜一搜物料预览</title><style>body{margin:0;padding:32px;background:#e9ede9;color:#243b30;font:16px system-ui,sans-serif}main{max-width:1080px;margin:auto}header{margin-bottom:20px}a{color:#176541}svg{max-width:100%;height:auto;display:block}.mobile{width:375px;max-width:100%;margin-top:20px}.panel{border:1px solid #ccd6ce;border-radius:8px;overflow:hidden;background:white}small{display:block;margin-top:12px;color:#52645a}h1{font-size:22px}h2{font-size:16px;margin-top:32px}</style><main><header><h1>搜一搜物料预览</h1>${design.logoItem.demo?'<p><strong>仅演示：使用原创占位标识，不能作为微信品牌成品发布。</strong></p>':''}<a href="material.svg" download>下载可编辑 SVG</a>${hasPng?' · <a href="material.png" download>下载 PNG</a>':' · PNG 尚未导出'} · <a href="design-notes.md">设计说明</a></header><div class="panel">${design.svg}</div><h2>手机预览（最多 375 px，随窗口缩放）</h2><div class="mobile panel">${design.svg.replaceAll('id="','id="mobile-').replaceAll('url(#','url(#mobile-').replace('aria-labelledby="design-title"','aria-labelledby="mobile-design-title"')}</div><small>文章内创作适配版 · 参考资料版本 2021-11-25 · 此页面用于预览与下载图片，文章编辑器请插入 PNG。</small></main></html>`;
+  return `<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src data:; style-src 'unsafe-inline'"><title>文章引导图预览</title><style>body{margin:0;padding:32px;background:#e9ede9;color:#243b30;font:16px system-ui,sans-serif}main{max-width:1080px;margin:auto}header{margin-bottom:20px}a{color:#176541}svg{max-width:100%;height:auto;display:block}.mobile{width:375px;max-width:100%;margin-top:20px}.panel{border:1px solid #ccd6ce;border-radius:8px;overflow:hidden;background:white}small{display:block;margin-top:12px;color:#52645a}h1{font-size:22px}h2{font-size:16px;margin-top:32px}</style><main><header><h1>文章引导图预览</h1>${design.logoItem?.demo?'<p><strong>仅演示：使用原创占位标识，不能作为微信品牌成品发布。</strong></p>':''}<a href="material.svg" download>下载可编辑 SVG</a>${hasPng?' · <a href="material.png" download>下载 PNG</a>':' · PNG 尚未导出'} · <a href="design-notes.md">设计说明</a></header><div class="panel">${design.svg}</div><h2>手机预览（最多 375 px，随窗口缩放）</h2><div class="mobile panel">${design.svg.replaceAll('id="','id="mobile-').replaceAll('url(#','url(#mobile-').replace('aria-labelledby="design-title"','aria-labelledby="mobile-design-title"')}</div><small>文章内静态图 · ${design.logoItem?'搜一搜参考资料版本 2021-11-25 · ':''}此页面用于预览与下载图片，文章编辑器请插入 PNG。</small></main></html>`;
 }
 
 export async function render(spec,output,{sourceOnly=false}={}) {
@@ -244,10 +289,11 @@ export async function render(spec,output,{sourceOnly=false}={}) {
   await fs.writeFile(path.join(out,'material.svg'),design.svg,{flag:'wx'});
   let result=null;let error=null;
   if(!sourceOnly) try { result=await exportPng(design);await fs.writeFile(path.join(out,'material.png'),result.png,{flag:'wx'});await fs.writeFile(path.join(out,'mobile-preview.png'),result.mobile,{flag:'wx'}); } catch(e) { error={code:e.code||'BROWSER_UNAVAILABLE',message:String(e.message).slice(0,600),...(e.geometry?{geometry:e.geometry}:{})}; }
-  const notes=`# 搜一搜物料设计说明\n\n${spec.copy.headline}\n\n${design.logoItem.demo?'仅演示：占位标识不是微信品牌素材，本图不可作为品牌成品发布。\n\n':''}- 公众号：${spec.account_name}\n- 文章主题：${spec.analysis.topic}\n- 读者：${spec.analysis.audience}\n- 文章价值：${spec.analysis.takeaway}\n- 语气与视觉：${spec.analysis.tone}；${spec.analysis.visual_style}\n- 形态：${spec.form}\n- 选择理由：${spec.analysis.reason}\n- 建议位置：${spec.placement}\n- 尺寸：${design.width}×${design.height} px\n- 公众号名称：完整保留${design.stacked?'，已调整为上下布局':''}\n\n## 原文依据\n\n${spec.analysis.evidence.map(e=>`> ${e.quote.replaceAll('\n','\n> ')}\n\n支持：${e.supports}`).join('\n\n')}\n\n## 使用\n\n${result?'将 material.png 插入文章指定位置；SVG 可继续编辑。':'SVG 源文件已生成，PNG 尚未导出。补齐本地浏览器依赖后在新输出目录重新运行。'}\n\n本图是文章内创作适配版，参考 2021-11-25 版资料。使用系统中文字体替代原规范中的汉仪旗黑，未宣称原规范字体完全一致或当前官方合规。PNG 使用的实际字体记录在 manifest.json。公众号搜索结果未核验，图片本身不具备点击搜索功能。\n`;
-  await fs.writeFile(path.join(out,'design-notes.md'),notes,{flag:'wx'});
+  const notes=`# 文章引导图设计说明\n\n${spec.copy?.headline||'文章内组合图'}\n\n${design.logoItem?.demo?'仅演示：占位标识不是微信品牌素材，本图不可作为品牌成品发布。\n\n':''}- 搜索公众号：${spec.account_name||'不适用（未选择搜索模块）'}\n- 文章主题：${spec.analysis.topic}\n- 读者：${spec.analysis.audience}\n- 文章价值：${spec.analysis.takeaway}\n- 语气与视觉：${spec.analysis.tone}；${spec.analysis.visual_style}\n- 形态：${spec.form}\n- 选择理由：${spec.analysis.reason}\n- 建议位置：${spec.placement}\n- 尺寸：${design.width}×${design.height} px\n- 公众号名称：${spec.account_name?'完整保留':'不适用'}${design.stacked?'，已调整为上下布局':''}\n\n## 原文依据\n\n${spec.analysis.evidence.map(e=>`> ${e.quote.replaceAll('\n','\n> ')}\n\n支持：${e.supports}`).join('\n\n')}\n\n## 使用\n\n${result?'将 material.png 插入文章指定位置；SVG 可继续编辑。':'SVG 源文件已生成，PNG 尚未导出。补齐本地浏览器依赖后在新输出目录重新运行。'}\n\n本图是文章内静态配图。${design.logoItem?'搜一搜区域参考 2021-11-25 版资料，未宣称当前官方合规或核验搜索结果。':''}使用系统中文字体，实际字体记录在 manifest.json；图片内提示不具备可点击的搜索或互动功能。\n`;
+  const compositionNotes=design.modules?`\n## 组合与尺寸\n\n- 模块：${design.modules.join(' + ')}\n- 排版：${design.layout}\n- 用户指定尺寸：${spec.size.width}×${spec.size.height} px${spec.size.aspect_ratio?`（${spec.size.aspect_ratio}）`:''}；导出逐像素保留\n- 作者：${design.authorRecord?`${design.authorRecord.name}（${design.authorRecord.mode==='image'?'复用图片，完整保留原比例':'根据资料排版'}）`:'未选择'}\n- 互动：${design.engagementRecord?.actions.join(' · ')||'未选择'}\n\n辅助文案调整记录：${JSON.stringify(spec.copy_edits||[])}\n图片中的搜索和互动提示均为静态图形，不是可点击按钮。复用作者卡中的嵌入文字需通过实际图片检查。\n`:'';
+  await fs.writeFile(path.join(out,'design-notes.md'),notes+compositionNotes,{flag:'wx'});
   await fs.writeFile(path.join(out,'preview.html'),preview(design,Boolean(result)),{flag:'wx'});
-  const manifest={schema:'wechat-search-design/v1',skill_version:VERSION,status:result?(design.logoItem.demo?'demo_exported':'exported'):'source_only',article_sha256:hash(spec.article),account_name:spec.account_name,form:spec.form,copy:spec.copy,analysis:spec.analysis,placement:spec.placement,size:{width:design.width,height:design.height},style:design.style,guide_version:'2021-11-25',usage_class:design.logoItem.demo?'demo_not_for_publication':'article_adaptation',font_policy:'system_fallback_not_original_HYQiHei',requested_font_stack:FONT,source_assets:[design.logoItem,...design.componentHashes],image:design.imageRecord,account_lines:design.accountLines,qa:{automated:result?'passed':'not_completed',visual_review:'pending',...(result?result.qc:{})},export_error:error,artifacts:[]};
+  const manifest={schema:'wechat-search-design/v1',skill_version:VERSION,status:result?(design.logoItem?.demo?'demo_exported':'exported'):'source_only',article_sha256:hash(spec.article),account_name:spec.account_name,form:spec.form,copy:spec.copy||{},copy_edits:spec.copy_edits||[],modules:design.modules||['search'],layout:design.layout||spec.form,author:design.authorRecord||null,engagement:design.engagementRecord||null,requested_size:spec.size||null,analysis:spec.analysis,placement:spec.placement,size:{width:design.width,height:design.height},style:design.style,guide_version:design.logoItem?'2021-11-25':null,usage_class:design.logoItem?.demo?'demo_not_for_publication':'article_adaptation',font_policy:'system_fallback_not_original_HYQiHei',requested_font_stack:FONT,source_assets:[design.logoItem,...design.componentHashes,...(design.sourceAssets||[])].filter(Boolean),image:design.imageRecord,account_lines:design.accountLines,qa:{automated:result?'passed':'not_completed',visual_review:'pending',...(result?result.qc:{})},export_error:error,artifacts:[]};
   for(const file of ['material.svg','material.png','mobile-preview.png','preview.html','design-notes.md']) {
     try { const b=await fs.readFile(path.join(out,file));manifest.artifacts.push({path:file,bytes:b.length,sha256:hash(b)}); } catch(e) { if(e.code!=='ENOENT') throw e; }
   }
@@ -266,8 +312,8 @@ export async function recordReview(output,reportPath) {
   }
   const report=JSON.parse(await fs.readFile(path.resolve(reportPath),'utf8'));
   required(report.reviewer,'reviewer');required(report.notes,'实际观察');
-  const keys=['exact_account_name','mobile_readability','brand_proportion_and_clearance','article_fit_and_supported_copy','image_crop'];
-  if(keys.some(k=>typeof report.checks?.[k]!=='boolean'))fail('REVIEW_INPUT','必须逐项记录五项检查结果。');
+  const keys=['exact_account_name','mobile_readability','brand_proportion_and_clearance','article_fit_and_supported_copy','image_crop',...(m.form==='composite-card'?['exact_author_name','requested_modules_and_size']:[])];
+  if(keys.some(k=>typeof report.checks?.[k]!=='boolean'))fail('REVIEW_INPUT',`必须逐项记录 ${keys.length} 项检查结果。`);
   const passed=keys.every(k=>report.checks[k]);
   const review={...report,status:passed?'passed':'needs_revision',reviewed_at:new Date().toISOString(),artifact_sha256:Object.fromEntries(m.artifacts.map(a=>[a.path,a.sha256]))};
   m.qa.visual_review=review.status;m.qa.review=review;
