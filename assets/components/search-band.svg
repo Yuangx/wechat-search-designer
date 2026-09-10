@@ -1,0 +1,7 @@
+<g id="search-band" data-component="search-band-v1">
+  <rect x="0" y="{{y}}" width="1080" height="{{height}}" fill="{{background}}"/>
+  <image id="brand-mark" x="48" y="{{logoY}}" width="260" height="{{logoHeight}}" preserveAspectRatio="xMidYMid meet" href="{{logo}}"/>
+  <rect x="{{searchX}}" y="{{searchY}}" width="{{searchWidth}}" height="{{searchHeight}}" rx="12" fill="#FFFFFF" stroke="{{border}}" stroke-width="2"/>
+  <g transform="translate({{iconX}} {{iconY}})" stroke="#7F7F7F" stroke-width="3.5" fill="none"><circle cx="13" cy="13" r="11"/><path d="M21 21L31 31" stroke-linecap="round"/></g>
+  {{accountText}}
+</g>

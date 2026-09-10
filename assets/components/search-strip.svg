@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="{{width}}" height="{{height}}" viewBox="0 0 1080 {{viewHeight}}" role="img" aria-labelledby="design-title">
+  <title id="design-title">{{title}}</title>
+  <rect width="1080" height="{{viewHeight}}" fill="{{background}}"/>
+  {{content}}
+  {{band}}
+</svg>
