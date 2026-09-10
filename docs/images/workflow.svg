@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="670" viewBox="0 0 900 670" role="img" aria-labelledby="title desc">
+  <title id="title">从文章到引导图，四步完成</title>
+  <desc id="desc">提供文章、准确公众号名和可用标识；Agent 理解内容并做设计；本地导出 PNG、SVG、HTML；检查后由创作者插入文章。</desc>
+  <rect width="900" height="670" rx="24" fill="#F7F8F3"/>
+  <g font-family="'PingFang SC','Microsoft YaHei','Noto Sans CJK SC',sans-serif">
+    <text x="44" y="55" font-size="30" font-weight="700" fill="#172C27">从文章到引导图，四步完成</text>
+    <path d="M88 152V566" fill="none" stroke="#A4C6B0" stroke-width="3"/>
+    <g>
+      <rect x="128" y="91" width="728" height="112" rx="14" fill="#FFF" stroke="#DDE6DC"/>
+      <circle cx="88" cy="147" r="29" fill="#188255"/>
+      <text x="88" y="157" text-anchor="middle" font-size="28" font-weight="700" fill="#FFF">01</text>
+      <text x="158" y="136" font-size="32" font-weight="700" fill="#172C27">提供素材</text>
+      <text x="158" y="178" font-size="27" fill="#52645A">文章、准确公众号名、可用标识与参考图</text>
+    </g>
+    <g>
+      <rect x="128" y="231" width="728" height="112" rx="14" fill="#FFF" stroke="#DDE6DC"/>
+      <circle cx="88" cy="287" r="29" fill="#188255"/>
+      <text x="88" y="297" text-anchor="middle" font-size="28" font-weight="700" fill="#FFF">02</text>
+      <text x="158" y="276" font-size="32" font-weight="700" fill="#172C27">Agent 理解文章并设计</text>
+      <text x="158" y="318" font-size="27" fill="#52645A">选择形态、协调风格、写有文章依据的文案</text>
+    </g>
+    <g>
+      <rect x="128" y="371" width="728" height="112" rx="14" fill="#FFF" stroke="#DDE6DC"/>
+      <circle cx="88" cy="427" r="29" fill="#188255"/>
+      <text x="88" y="437" text-anchor="middle" font-size="28" font-weight="700" fill="#FFF">03</text>
+      <text x="158" y="416" font-size="32" font-weight="700" fill="#172C27">在本地导出</text>
+      <text x="158" y="458" font-size="27" fill="#52645A">PNG · SVG · HTML，以及设计说明和记录</text>
+    </g>
+    <g>
+      <rect x="128" y="511" width="728" height="112" rx="14" fill="#E7F1E9" stroke="#A4C6B0"/>
+      <circle cx="88" cy="567" r="29" fill="#172C27"/>
+      <text x="88" y="577" text-anchor="middle" font-size="28" font-weight="700" fill="#FFF">04</text>
+      <text x="158" y="556" font-size="32" font-weight="700" fill="#172C27">检查后，由创作者插入文章</text>
+      <text x="158" y="598" font-size="27" fill="#52645A">核对完整名称、品牌比例和手机可读性</text>
+    </g>
+  </g>
+</svg>
