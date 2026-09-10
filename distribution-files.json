@@ -9,6 +9,7 @@
     ".gitignore",
     "CODE_OF_CONDUCT.md",
     "CONTRIBUTING.md",
+    "LICENSE",
     "NOTICE.md",
     "README.md",
     "SECURITY.md",
@@ -54,6 +55,7 @@
     "tests/fixtures/demo-brand-color.png",
     "tests/fixtures/demo-brand-color.svg",
     "tests/fixtures/demo-brand-white.png",
-    "tests/fixtures/demo-brand-white.svg"
+    "tests/fixtures/demo-brand-white.svg",
+    "tests/structure.test.mjs"
   ]
 }

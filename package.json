@@ -1,6 +1,6 @@
 {
   "name": "wechat-search-designer",
-  "version": "0.2.0-rc.1",
+  "version": "0.2.0",
   "private": true,
   "description": "Article-aware WeChat Search material design skill and local exporter",
   "type": "module",
@@ -18,5 +18,5 @@
   "dependencies": {
     "playwright": "1.62.1"
   },
-  "license": "UNLICENSED"
+  "license": "MIT"
 }

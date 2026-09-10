@@ -9,6 +9,7 @@
 | [GitHub: Community profiles](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/about-community-profiles-for-public-repositories) | 区分推荐的协作文件和平台强制规则 |
 | [GitHub: Contributing guidelines](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/setting-guidelines-for-repository-contributors) | 根目录贡献说明 |
 | [GitHub: Licensing a repository](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository) | 明确许可状态；公开可见不能代替开源授权 |
+| [Open Source Initiative: The MIT License](https://opensource.org/license/mit) | 根目录 MIT 授权正文；复用时保留版权和许可声明，按原文提供免责条款 |
 | [GitHub: Private vulnerability reporting](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/configure-vulnerability-reporting/configure-for-a-repository) | 私密报告入口需维护者启用，不能提前声称入口已可用 |
 | [GitHub: Issue form syntax](https://docs.github.com/en/communities/using-templates-to-encourage-useful-issues-and-pull-requests/syntax-for-issue-forms) | `.github/ISSUE_TEMPLATE` 表单字段与必填项 |
 | [actions/checkout](https://github.com/actions/checkout) / [actions/setup-node](https://github.com/actions/setup-node) | 验证工作流的检出与 Node 环境步骤，使用核对后的提交哈希 |

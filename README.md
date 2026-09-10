@@ -8,7 +8,7 @@
 
 [查看示例](#示例) · [安装与第一次运行](#安装与第一次运行) · [设计输入格式](references/design-input.md) · [报告问题](https://github.com/Yuangx/wechat-search-designer/issues)
 
-> 当前为 `0.2.0-rc.1` 发布候选。公开包包含原创排版组件与虚构示例；真实设计需要使用者提供可用的搜一搜标识。第三方 PDF、AI、字体和品牌图片不随仓库分发。代码许可证尚待维护者确认，当前不宣称已取得开源授权。
+> 当前版本 `0.2.0`，采用 [MIT 许可证](LICENSE)。公开包包含原创排版组件与虚构示例；真实设计需要使用者提供可用的搜一搜标识。第三方 PDF、AI、字体和品牌图片不随仓库分发。
 
 ## 你会拿到什么
 
@@ -50,7 +50,7 @@
 
 ### 1. 放入 Agent 的技能目录
 
-在 [GitHub 仓库](https://github.com/Yuangx/wechat-search-designer)选择 **Code → Download ZIP**。解压后将包含 `SKILL.md` 的文件夹命名为 `wechat-search-designer`，保留全部子目录，再放入你的 Agent 支持的本地 Skill 目录。后续如有独立版本安装包，可从仓库 Releases 下载。
+从 [GitHub Releases](https://github.com/Yuangx/wechat-search-designer/releases)下载版本安装包，或在仓库选择 **Code → Download ZIP** 获取当前源码。解压后将包含 `SKILL.md` 的文件夹命名为 `wechat-search-designer`，保留全部子目录，再放入你的 Agent 支持的本地 Skill 目录。
 
 安装目录由宿主决定。本仓库不会自动修改全局配置；`agents/openai.yaml` 提供可选的 Codex 展示信息，其他宿主读取通用的 `SKILL.md` 即可。确认宿主已发现该 Skill 后再调用。
 
@@ -137,4 +137,4 @@ npm run package
 
 首版覆盖文章内静态物料，不自动发布微信文章或处理视频落版。布局参考 2021-11-25 版搜一搜设计关系，属于文章内创作适配，不是微信官方工具或当前广告投放认证。
 
-代码许可证当前待确认；第三方标识、用户图片、商标和字体各自遵循其使用条件，不会因本仓库的代码许可证而自动获得授权。详见 [NOTICE.md](NOTICE.md)。维护者发布步骤与验证边界见 [发布说明](docs/releasing.md)。
+原创代码、Skill 指引、文档、组件和示例采用 [MIT 许可证](LICENSE)，允许复用、修改、分发和商用，须保留版权与许可声明。第三方标识、用户图片、商标和字体各自遵循其使用条件，不会因本仓库的许可证而自动获得授权。详见 [NOTICE.md](NOTICE.md)。维护者发布步骤与验证边界见 [发布说明](docs/releasing.md)。

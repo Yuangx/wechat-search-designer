@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-export const VERSION = '0.2.0-rc.1';
+export const VERSION = '0.2.0';
 export const FONT = '"PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC", sans-serif';
 export const hash = value => createHash('sha256').update(value).digest('hex');
 export const xml = value => String(value).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'}[c]));

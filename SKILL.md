@@ -1,8 +1,9 @@
 ---
 name: wechat-search-designer
 description: 根据微信公众号文章内容选择、改造并设计搜一搜静态物料，生成搜索引导条、文末引导卡或主题场景卡，交付 PNG、可编辑 SVG 和预览。用于用户希望为文章配套搜一搜引导图、搜索作者公众号的物料，或调整已有搜一搜设计时。
+license: MIT
 metadata:
-  version: "0.2.0-rc.1"
+  version: "0.2.0"
   runtime: "需要宿主读写本地文件、运行 Node.js 22+ 并查看图片；PNG 导出使用 Playwright Chromium 与中文字体。首次安装依赖需要网络，真实设计需要使用者提供搜一搜 PNG 标识。"
 ---
 
