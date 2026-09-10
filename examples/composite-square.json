@@ -1,0 +1,59 @@
+{
+  "article_path": "opinion.md",
+  "account_name": "示例判断笔记 AI Notes",
+  "form": "composite-card",
+  "copy": {
+    "headline": "让判断有依据，让讨论有起点"
+  },
+  "analysis": {
+    "topic": "把隐含的产品判断写成可讨论的内容",
+    "audience": "需要参与方案讨论的创作者与协作者",
+    "takeaway": "说明对象、问题和理由，帮助讨论从具体分歧开始",
+    "tone": "克制、思考型",
+    "visual_style": "深绿色底、清晰文字层次和留白",
+    "reason": "观点文章用方形画布留出阅读空间，作者、搜索和开放问题依次承接。",
+    "evidence": [
+      {
+        "quote": "一次可讨论的判断，包含对象、问题和理由。",
+        "supports": "价值文案保留这三个具体要素。"
+      }
+    ]
+  },
+  "placement": "正文最后一段之后",
+  "style": {
+    "mode": "dark",
+    "background": "#192C28",
+    "ink": "#F7F5E9",
+    "muted": "#CDD8CD",
+    "accent": "#9CCAA5"
+  },
+  "modules": [
+    "author",
+    "search",
+    "engagement"
+  ],
+  "size": {
+    "width": 1080,
+    "height": 1080,
+    "aspect_ratio": "1:1"
+  },
+  "layout": "auto",
+  "author": {
+    "mode": "profile",
+    "name": "林禾 · AI Notes",
+    "description": "记录问题、理由与可以讨论的判断。",
+    "avatar": {
+      "path": "author-avatar.png",
+      "alt": "虚构作者林禾的原创几何头像",
+      "basis": "本项目绘制的演示几何图形"
+    }
+  },
+  "engagement": {
+    "actions": [
+      "收藏",
+      "留言",
+      "分享给伙伴"
+    ],
+    "caption": "你会先写下哪一个判断？"
+  }
+}
