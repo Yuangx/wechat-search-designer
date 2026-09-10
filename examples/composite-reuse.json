@@ -1,0 +1,55 @@
+{
+  "article_path": "life.md",
+  "form": "composite-card",
+  "copy": {
+    "headline": "把散步中的小发现留下来"
+  },
+  "analysis": {
+    "topic": "通过散步记录日常小事",
+    "audience": "喜欢散步和生活记录的读者",
+    "takeaway": "从一件实际看见的小事开始记录",
+    "tone": "缓慢、温和",
+    "visual_style": "暖白纸张色、浅褐线条和公园场景插画",
+    "reason": "随笔沿用现成作者卡，搭配留言和收藏提示；本例不需要搜一搜。",
+    "evidence": [
+      {
+        "quote": "散步后的记录，可以从一件看见的小事开始。",
+        "supports": "标题与价值文案引导记录具体小事，没有添加额外福利承诺。"
+      }
+    ]
+  },
+  "placement": "结尾段落之后",
+  "style": {
+    "mode": "light",
+    "background": "#FFF8ED",
+    "ink": "#493A2D",
+    "muted": "#756049",
+    "accent": "#8C6944"
+  },
+  "modules": [
+    "author",
+    "engagement"
+  ],
+  "size": {
+    "width": 1080,
+    "height": 810,
+    "aspect_ratio": "4:3"
+  },
+  "layout": "stacked",
+  "author": {
+    "mode": "image",
+    "name": "林禾",
+    "image": {
+      "path": "author-card.png",
+      "alt": "虚构作者林禾的完整作者卡",
+      "basis": "本项目用虚构资料生成的演示卡片"
+    }
+  },
+  "engagement": {
+    "actions": [
+      "留言",
+      "收藏"
+    ],
+    "caption": "也记下今天路上看到的一件小事。"
+  }
+}

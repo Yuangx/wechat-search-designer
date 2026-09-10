@@ -1,6 +1,6 @@
 interface:
-  display_name: "微信搜一搜物料设计"
-  short_description: "根据文章内容选择和改造搜一搜素材，生成配套引导图与可编辑文件"
-  default_prompt: "使用 $wechat-search-designer，根据这篇文章和我提供的公众号名称，设计一款适合插入文中的搜一搜物料。"
+  display_name: "微信文章组合图设计"
+  short_description: "按文章和用户选定尺寸，组合作者卡、搜一搜及互动提示，生成配图与可编辑文件"
+  default_prompt: "使用 $wechat-search-designer，根据这篇文章设计一张引导图，按需组合作者卡、搜一搜和互动提示，让我选择图片比例与尺寸。"
 policy:
   allow_implicit_invocation: true

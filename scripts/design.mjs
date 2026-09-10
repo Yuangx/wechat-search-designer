@@ -8,7 +8,7 @@ try {
   } else if(action==='doctor') {
     const m=await verifyAssets();const chromium=await loadBrowser();
     const browser=await chromium.launch({headless:true,...(process.env.WECHAT_SEARCH_BROWSER?{executablePath:process.env.WECHAT_SEARCH_BROWSER}:{})});
-    console.log(JSON.stringify({status:'ready',node:process.version,browser:browser.version(),asset_files:m.files.length,brand_input:'required_for_real_design'}));await browser.close();
+    console.log(JSON.stringify({status:'ready',node:process.version,browser:browser.version(),asset_files:m.files.length,brand_input:'required_when_search_module_selected'}));await browser.close();
   } else if(action==='record-review') {
     if(args.length!==2)throw new Error('用法：record-review <输出目录> <审阅.json>');
     console.log(JSON.stringify(await recordReview(args[0],args[1])));

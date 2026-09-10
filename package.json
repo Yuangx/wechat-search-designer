@@ -1,8 +1,8 @@
 {
   "name": "wechat-search-designer",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
-  "description": "Article-aware WeChat Search material design skill and local exporter",
+  "description": "Article-aware author, WeChat Search and engagement card design skill",
   "type": "module",
   "engines": {
     "node": ">=22"
@@ -13,7 +13,8 @@
     "test": "node --test tests/*.test.mjs",
     "check": "node scripts/check-structure.mjs",
     "demo": "node scripts/demo.mjs",
-    "package": "python3 scripts/package_skill.py"
+    "package": "python3 scripts/package_skill.py",
+    "demo:composite": "node scripts/demo-composite.mjs"
   },
   "dependencies": {
     "playwright": "1.62.1"
