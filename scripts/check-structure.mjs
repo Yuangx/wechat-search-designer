@@ -2,7 +2,7 @@
 // Repository-specific structure check; not a general YAML parser or Skill certification.
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import {ROOT,verifyAssets} from './lib.mjs';
+import {ROOT,VERSION,verifyAssets} from './lib.mjs';
 
 export async function checkStructure(root=ROOT) {
   const errors=[],warnings=[];
@@ -41,11 +41,18 @@ export async function checkStructure(root=ROOT) {
       }
     }
   }
-  for(const required of ['SKILL.md','README.md','agents/openai.yaml','scripts/design.mjs','references/design-input.md','SECURITY.md','CONTRIBUTING.md','NOTICE.md'])if(!files.includes(required))errors.push(`Required repository file absent from distribution: ${required}`);
+  for(const required of ['SKILL.md','README.md','agents/openai.yaml','scripts/design.mjs','references/design-input.md','SECURITY.md','CONTRIBUTING.md','NOTICE.md','LICENSE'])if(!files.includes(required))errors.push(`Required repository file absent from distribution: ${required}`);
   const lock=JSON.parse(await fs.readFile(path.join(root,'package-lock.json'),'utf8'));
   if(lock.version!==pkg.version||lock.packages[''].version!==pkg.version)errors.push('Lockfile version mismatch');
+  if(root===ROOT&&VERSION!==pkg.version)errors.push('Exporter version mismatch');
+  if(scalar('license')!==pkg.license||lock.packages[''].license!==pkg.license)errors.push('License metadata mismatch');
+  try {
+    const license=await fs.readFile(path.join(root,'LICENSE'),'utf8');
+    if(!license.trim())errors.push('LICENSE is empty');
+    if(pkg.license==='MIT'&&(!/^MIT License\r?$/m.test(license)||!license.includes('Permission is hereby granted, free of charge,')))errors.push('LICENSE does not contain the expected MIT text');
+  } catch { errors.push('LICENSE is missing'); }
   if(root===ROOT)try{await verifyAssets();}catch(e){errors.push(`Asset check: ${e.message}`);}
-  if(pkg.license==='UNLICENSED')warnings.push('Code license not selected; do not claim an open-source release');
+  if(!pkg.license||pkg.license==='UNLICENSED')errors.push('A release license must be declared');
   return {status:errors.length?'invalid':'valid',skill_name:name,version:pkg.version,skill_lines:skill.split('\n').length,distribution_files:files.length,errors,warnings};
 }
 if(process.argv[1]&&path.resolve(process.argv[1])===path.join(ROOT,'scripts/check-structure.mjs')) {

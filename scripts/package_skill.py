@@ -41,7 +41,7 @@ def main():
             raise SystemExit(f'Excluded payload found: {name}')
         data = p.read_bytes()
         records.append({'path': rel.as_posix(), 'bytes': len(data), 'sha256': digest(data)})
-    required = {'SKILL.md', 'README.md', 'package.json', 'package-lock.json', 'agents/openai.yaml', 'distribution-files.json', 'assets/manifest.json', 'examples/walk-scene.png'}
+    required = {'SKILL.md', 'README.md', 'LICENSE', 'NOTICE.md', 'package.json', 'package-lock.json', 'agents/openai.yaml', 'distribution-files.json', 'assets/manifest.json', 'examples/walk-scene.png'}
     assert required <= {r['path'] for r in records}, 'Required distribution files are missing'
     with ZipFile(archive, 'x', compression=ZIP_DEFLATED, compresslevel=9) as z:
         for item in records:
